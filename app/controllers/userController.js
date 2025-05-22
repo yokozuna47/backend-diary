@@ -1,11 +1,11 @@
-// J’importe le modèle Sequelize "User" depuis le dossier models
-const { User } = require('../../models');
-
-// J’importe la bibliothèque "argon2" pour hasher les mots de passe
-const argon2 = require('argon2');
-
-// J’importe la lib jsonwebtoken pour créer le token JWT lors du login
+// J’importe les fonctions métiers du userService
 const jwt = require('jsonwebtoken');
+const {
+  findUserByEmail,
+  createUser,
+  verifyPassword,
+  getAllUsers
+} = require('../services/userService');
 
 // =====================================
 // Fonction d'inscription (REGISTER)
@@ -14,24 +14,17 @@ exports.register = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
   try {
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await findUserByEmail(email);
     if (existingUser) {
       return res.status(409).json({ error: 'Email déjà utilisé' });
     }
 
-    const hashedPassword = await argon2.hash(password, { type: argon2.argon2id });
-
-    const user = await User.create({
-      firstName,
-      lastName,
-      email,
-      password: hashedPassword
-    });
+    const user = await createUser({ firstName, lastName, email, password });
 
     res.status(201).json({ message: 'Utilisateur créé avec succès', userId: user.id });
 
   } catch (error) {
-    console.error('Erreur lors de l\'inscription :', error);
+    console.error("Erreur lors de l'inscription :", error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 };
@@ -44,13 +37,13 @@ exports.login = async (req, res) => {
   console.log("Tentative de connexion :", email, password);
 
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await findUserByEmail(email);
 
     if (!user) {
       return res.status(401).json({ error: 'Identifiants invalides' });
     }
 
-    const isPasswordValid = await argon2.verify(user.password, password);
+    const isPasswordValid = await verifyPassword(user.password, password);
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Identifiants invalides' });
     }
@@ -75,21 +68,24 @@ exports.login = async (req, res) => {
 // =====================================
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findByPk(req.user.userId, {
-      attributes: ['id', 'firstName', 'lastName', 'email']
-    });
+    const user = await findUserByEmail(req.user.email);
 
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
 
-    res.json({ user });
+    res.json({
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role
+    });
   } catch (error) {
     console.error('Erreur /me :', error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 };
-
 
 // =====================================
 // Fonction de mise à jour du profil (PUT /me)
@@ -99,8 +95,8 @@ exports.updateProfile = async (req, res) => {
   const { firstName, lastName, email } = req.body;
 
   try {
-    // Je cherche l'utilisateur dans la base grâce à l'ID contenu dans le token JWT
-    const user = await User.findByPk(req.user.userId);
+    // Je cherche l'utilisateur dans la base grâce à l'email contenu dans le token JWT
+    const user = await findUserByEmail(req.user.email);
 
     // Si l'utilisateur n'existe pas, je renvoie une erreur
     if (!user) {
@@ -125,14 +121,13 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-
 // =====================================
-// Fonction de suppression du compte (DELETE /me)  (pour que le user puisse supprimer son compte)
+// Fonction de suppression du compte (DELETE /me)
 // =====================================
 exports.deleteProfile = async (req, res) => {
   try {
-    // Je cherche l’utilisateur connecté grâce à son ID (présent dans le token JWT)
-    const user = await User.findByPk(req.user.userId);
+    // Je cherche l’utilisateur connecté grâce à son email (présent dans le token JWT)
+    const user = await findUserByEmail(req.user.email);
 
     // Si aucun utilisateur n’est trouvé, je renvoie une erreur
     if (!user) {
@@ -156,11 +151,7 @@ exports.deleteProfile = async (req, res) => {
 // =====================================
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.findAll({
-      attributes: ['id', 'firstName', 'lastName', 'email', 'role'], // pas de password
-      order: [['id', 'ASC']]
-    });
-
+    const users = await getAllUsers();
     res.json({ users });
   } catch (error) {
     console.error('Erreur /users :', error);

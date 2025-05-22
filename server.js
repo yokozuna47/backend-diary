@@ -1,6 +1,10 @@
 // j'importe le module Express (framework backend )
 const express = require('express');
 
+// j'importe le module dotenv pour charger les variables d'environnement
+// dotenv est un module qui permet de charger les variables d'environnement à partir d'un fichier .env
+require('dotenv').config();
+
 // j'initialise une application Express
 const app = express();
 
@@ -12,6 +16,24 @@ app.use(express.json());
 
 // j'importe les routes définies dans app/routes/userRoutes.js
 const userRoutes = require('./app/routes/userRoutes');
+
+
+// 🔐 Mitigation sécurité contre l'injection de lien HTTP (res.set('Link'))
+const { sanitizeHeader } = require('./utils/sanitize');
+
+app.use((req, res, next) => {
+  const originalSet = res.set.bind(res);
+
+  res.set = (field, value) => {
+    if (field.toLowerCase() === 'link') {
+      return originalSet(field, sanitizeHeader(value));
+    }
+    return originalSet(field, value);
+  };
+
+  next();
+});
+
 
 // je dit à Express que toutes les routes définies dans userRoutes seront préfixées par /api/users
 // Exemple : POST /api/users/register
@@ -36,6 +58,5 @@ app.get('/', (req, res) => {
 });
 
 require('./swagger')(app);
-
 
 module.exports = app;
