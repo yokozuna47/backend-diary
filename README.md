@@ -1,17 +1,23 @@
 # 📘 Projet : Intégration et Sécurisation d'une Base de Données (backend-diary)
 
+[![CI Tests](https://github.com/yokozuna47/backend-diary/actions/workflows/test.yml/badge.svg)](https://github.com/yokozuna47/backend-diary/actions)
+
 ## 🧩 Description
 Ce projet a pour objectif de créer un backend Node.js sécurisé pour gérer des utilisateurs via une API REST. Il intègre une base de données PostgreSQL, un système d'authentification JWT, une gestion des rôles (`user`, `admin`) et des protections classiques (rate-limiting, headers de sécurité, validation d’entrées).
 
-## 🚀 Stack technique
-- Node.js + Express
-- PostgreSQL (via Docker)
-- Sequelize ORM
-- JWT (jsonwebtoken)
-- Argon2 (hachage sécurisé des mots de passe)
-- express-validator
-- Helmet, CORS, Rate-limit
-- React (frontend stylé SPA)
+
+## Stack technique :
+
+-  **Backend** : Node.js + Express
+-  **Base de données** : PostgreSQL + Sequelize ORM
+-  **Frontend** : React + Vite + TailwindCSS
+-  **Conteneurisation** : Docker + docker-compose
+-  **Infrastructure as Code** : Terraform (réseau + conteneurs)
+-  **Auth** : JWT + Argon2id (bcrypt interdit)
+-  **Tests** : Jest + Supertest (CI via GitHub Actions)
+-  **Documentation API** : Swagger (auto-générée)
+-  **Sécurité** : Helmet, CORS, Rate-limit, Express-validator, sanitizeHeader()
+
 
 ## 🔐 Fonctionnalités principales
 - Inscription / Connexion avec token JWT
@@ -23,6 +29,20 @@ Ce projet a pour objectif de créer un backend Node.js sécurisé pour gérer de
   - `DELETE /me`
 - Liste des utilisateurs réservée aux admins : `GET /api/users`
 - Interface frontend avec pages sécurisées (register, login, me, admin)
+
+
+### 🔓 Utilisateur anonyme
+- `POST /api/users/register` → Inscription (mot de passe hashé Argon2id)
+- `POST /api/users/login` → Connexion (JWT sécurisé)
+
+### 🔐 Utilisateur connecté (token JWT)
+- `GET /api/users/me` → Voir son profil
+- `PUT /api/users/me` → Modifier son profil
+- `DELETE /api/users/me` → Supprimer son compte
+
+### 👑 Admin uniquement
+- `GET /api/users` → Voir tous les utilisateurs
+
 
 
 ## 🐘 Base de données
@@ -46,6 +66,14 @@ Ce projet a pour objectif de créer un backend Node.js sécurisé pour gérer de
 - `GET /api/users` → Voir tous les utilisateurs
 - `GET /api/users/admin-only` → Test d'accès admin
 
+
+## 🌍 Accès local
+| Composant | URL par défaut |
+|----------|----------------|
+| Frontend | http://localhost:5173 |
+| Backend  | http://localhost:3000/api/users |
+| DB       | PostgreSQL sur port `5433` |
+
 ## ✅ Sécurité mise en place
 - Hash mot de passe avec `argon2id`
 - JWT stocké côté client et supprimé à la déconnexion
@@ -56,20 +84,38 @@ Ce projet a pour objectif de créer un backend Node.js sécurisé pour gérer de
 - Contre-pression avec `express-rate-limit`
 - Frontend empêche l'accès aux pages protégées sans JWT
 
-## 🧪 Tests
+## 🧪 Tests et CI
 - Tests Jest + Supertest sur les routes principales
 - Tests exécutés automatiquement via CI (GitHub Actions)
+- Lancement local : `npm test`
+- Base dédiée `diary_test`
+- Pipeline GitHub Actions : **tests + sécurité**
+- Badge CI : ✅ Affiché en haut du README
+
+
+## 🔎 OWASP & Sécurité
+- ✅ OWASP Dependency-Check (via GitHub Actions)
+- ✅ Mitigation CVE-2024-10491 (sanitizeHeader)
+- ✅ Analyse CIA : Intégrité, Confidentialité, Disponibilité
+- ✅ Contre XSS, bruteforce, BAC, privilèges
+
 
 ## 📄 Documentation API
 - Générée avec Swagger (`/swagger` route locale)
+- Endpoint : `http://localhost:3000/api-docs`
+- Export HTML généré automatiquement : `docs/swagger.html
 
 ## 📦 Bonus réalisés ✅
-- Design moderne côté frontend
-- Tests unitaires + intégration
-- Pipeline CI/CD GitHub Actions
-- Dockerisation complète
+- Design moderne côté frontend - TailwindCSS (responsive)
+- Tests unitaires + intégration - Tests automatisés (Jest + CI)
+- Pipeline CI/CD GitHub Actions 
+- Dockerisation complète - frontend/backend/DB
 - Architecture logicielle claire (MVC, middlewares, routes)
 - Respect des bonnes pratiques (validation, séparation des rôles, hash sécurisé)
+- Badge CI
+- Infrastructure Terraform
+- Scan OWASP automatisé (rapport HTML
+
 
 ## 👤 Auteur
 - Nom : Ba Issiakha
