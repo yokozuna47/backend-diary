@@ -5,6 +5,29 @@
 ## 🧩 Description
 Ce projet a pour objectif de créer un backend Node.js sécurisé pour gérer des utilisateurs via une API REST. Il intègre une base de données PostgreSQL, un système d'authentification JWT, une gestion des rôles (`user`, `admin`) et des protections classiques (rate-limiting, headers de sécurité, validation d’entrées).
 
+🍪 Bannière de consentement RGPD-Compliant
+
+L’application frontend intègre une bannière de gestion des cookies conforme au RGPD, avec :
+
+    ✅ Consentement explicite avant chargement des cookies facultatifs
+
+    ✅ Refus possible aussi simple que l’acceptation (Tout refuser)
+
+    ✅ Choix granulaire : Préférences, Statistiques, Marketing
+
+    ✅ Conservation des choix pendant 12 mois
+
+    ✅ Lien vers la Politique de confidentialité
+
+    ✅ Icône flottante “Gérer mes cookies” (modifiable à tout moment)
+
+    ✅ Scripts (analytics, préférences, pub) chargés uniquement après consentement
+
+    ✅ Envoi sécurisé du consentement au backend (/api/consent) avec UUID horodaté
+
+    ✅ Accessibilité : role="dialog", focus conservé, contraste élevé
+
+    ✅ Animations douces : fade-in / slide-in (config Tailwind)
 
 ## Stack technique :
 
