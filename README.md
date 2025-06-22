@@ -52,10 +52,10 @@ L'application respecte les exigences du **Règlement Général sur la Protection
   - `loadMarketingScripts()`
 -  **Mode développement RGPD-First** : tous les scripts tiers bloqués par défaut
 
-###  Gouvernance possible (Bonus entreprise)
+###  Gouvernance possible 
 -  Compatible avec solutions comme **OneTrust**, **Cookiebot**, ou **DataGalaxy**
-- 🕵 Traçabilité facilitée pour un DPO avec `POST /api/consent`
-- ✅ Conformité aux recommandations **CNIL** (version 2025)
+-  Traçabilité facilitée pour un DPO avec `POST /api/consent`
+-  Conformité aux recommandations **CNIL** (version 2025)
 
 ---
 
@@ -172,5 +172,5 @@ L'application respecte les exigences du **Règlement Général sur la Protection
 
 
 ## 👤 Auteur
-- Nom : Ba Issiakha
+- Nom : Ba Issiakha, Vadio Co ca, Thoubaitha Issaoui 
 - Projet encadré par Boris Rose
