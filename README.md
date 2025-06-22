@@ -1,4 +1,4 @@
-# 📘 Projet : Intégration et Sécurisation d'une Base de Données (backend-diary)
+# 📘 Projet : Intégration et Sécurisation d'une Base de Données - UI RGPD-Compliant d’une bannière cookie
 
 [![CI Tests](https://github.com/yokozuna47/backend-diary/actions/workflows/test.yml/badge.svg)](https://github.com/yokozuna47/backend-diary/actions)
 
