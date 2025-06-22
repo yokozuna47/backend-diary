@@ -24,3 +24,32 @@ const specs = swaggerJsDoc(options);
 module.exports = (app) => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 };
+
+
+/**
+ * @swagger
+ * /api/users/consent:
+ *   post:
+ *     summary: Enregistrer le consentement d’un utilisateur
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               tracking:
+ *                 type: boolean
+ *               analytics:
+ *                 type: boolean
+ *               marketing:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Consentement enregistré
+ *       500:
+ *         description: Erreur serveur
+ */
+

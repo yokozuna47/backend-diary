@@ -1,56 +1,63 @@
-// J’importe les fonctions métiers du userService
 const jwt = require('jsonwebtoken');
+
+// J'importe les fonctions de service liées aux utilisateurs
 const {
   findUserByEmail,
   createUser,
   verifyPassword,
-  getAllUsers
+  getAllUsers: getAllUsersFromService
 } = require('../services/userService');
 
-// =====================================
-// Fonction d'inscription (REGISTER)
-// =====================================
-exports.register = async (req, res) => {
+// ======================
+//  INSCRIPTION
+// ======================
+const register = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
   try {
+    // Vérifie si l'utilisateur existe déjà
     const existingUser = await findUserByEmail(email);
     if (existingUser) {
       return res.status(409).json({ error: 'Email déjà utilisé' });
     }
 
+    // Crée le nouvel utilisateur
     const user = await createUser({ firstName, lastName, email, password });
-
-    res.status(201).json({ message: 'Utilisateur créé avec succès', userId: user.id });
+    res.status(201).json({ message: 'Utilisateur créé', userId: user.id });
 
   } catch (error) {
-    console.error("Erreur lors de l'inscription :", error);
+    // Gère le cas où l'email est déjà pris malgré tout
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      return res.status(409).json({ error: 'Cet email est déjà utilisé' });
+    }
+
+    console.error("Erreur d'inscription :", error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 };
 
-// =====================================
-// Fonction de connexion (LOGIN)
-// =====================================
-exports.login = async (req, res) => {
+// ======================
+//  CONNEXION
+// ======================
+const login = async (req, res) => {
   const { email, password } = req.body;
-  console.log("Tentative de connexion :", email, password);
 
   try {
+    // Recherche l'utilisateur
     const user = await findUserByEmail(email);
-
     if (!user) {
       return res.status(401).json({ error: 'Identifiants invalides' });
     }
 
+    // Vérifie le mot de passe
     const isPasswordValid = await verifyPassword(user.password, password);
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Identifiants invalides' });
     }
 
+    // Crée le token JWT
     const token = jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
-      // Je crée un token JWT avec l'ID de l'utilisateur et son email
       process.env.JWT_SECRET,
       { expiresIn: '2h' }
     );
@@ -58,28 +65,29 @@ exports.login = async (req, res) => {
     res.json({ message: 'Connexion réussie', token });
 
   } catch (error) {
-    console.error('Erreur lors de la connexion :', error);
+    console.error('Erreur de connexion :', error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 };
 
-// =====================================
-// Fonction de profil (GET /me)
-// =====================================
-exports.getProfile = async (req, res) => {
+// ======================
+//  PROFIL UTILISATEUR
+// ======================
+const getProfile = async (req, res) => {
   try {
     const user = await findUserByEmail(req.user.email);
-
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
 
     res.json({
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      role: user.role
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role
+      }
     });
   } catch (error) {
     console.error('Erreur /me :', error);
@@ -87,74 +95,102 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-// =====================================
-// Fonction de mise à jour du profil (PUT /me)
-// =====================================
-exports.updateProfile = async (req, res) => {
-  // Je récupère les nouvelles valeurs que l'utilisateur veut modifier
+// ======================
+//  MISE À JOUR PROFIL
+// ======================
+const updateProfile = async (req, res) => {
   const { firstName, lastName, email } = req.body;
 
   try {
-    // Je cherche l'utilisateur dans la base grâce à l'email contenu dans le token JWT
     const user = await findUserByEmail(req.user.email);
-
-    // Si l'utilisateur n'existe pas, je renvoie une erreur
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
 
-    // Je mets à jour seulement les champs qui ont été fournis (si non fournis, je garde l'ancien)
+    // Met à jour les infos si elles sont fournies
     user.firstName = firstName || user.firstName;
     user.lastName = lastName || user.lastName;
     user.email = email || user.email;
 
-    // Je sauvegarde les modifications dans la base de données
     await user.save();
-
-    // Je renvoie une réponse de succès avec le nouvel objet utilisateur
     res.json({ message: 'Profil mis à jour', user });
 
   } catch (error) {
-    // En cas d'erreur, je log et je renvoie une erreur serveur
-    console.error('Erreur lors de la mise à jour :', error);
+    console.error('Erreur update :', error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 };
 
-// =====================================
-// Fonction de suppression du compte (DELETE /me)
-// =====================================
-exports.deleteProfile = async (req, res) => {
+// ======================
+//  SUPPRESSION DE COMPTE
+// ======================
+const deleteProfile = async (req, res) => {
   try {
-    // Je cherche l’utilisateur connecté grâce à son email (présent dans le token JWT)
     const user = await findUserByEmail(req.user.email);
-
-    // Si aucun utilisateur n’est trouvé, je renvoie une erreur
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
 
-    // Je supprime cet utilisateur de la base de données
     await user.destroy();
-
-    // Je renvoie un message de confirmation
-    res.json({ message: 'Compte utilisateur supprimé avec succès' });
+    res.json({ message: 'Compte supprimé' });
 
   } catch (error) {
-    console.error('Erreur lors de la suppression :', error);
+    console.error('Erreur suppression :', error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 };
 
-// =====================================
-// Route admin : récupérer tous les utilisateurs
-// =====================================
-exports.getAllUsers = async (req, res) => {
+// ======================
+//  ADMIN - LISTE USERS
+// ======================
+const getAllUsers = async (_req, res) => {
   try {
-    const users = await getAllUsers();
+    const users = await getAllUsersFromService();
     res.json({ users });
   } catch (error) {
-    console.error('Erreur /users :', error);
+    console.error('Erreur admin /users :', error);
     res.status(500).json({ error: 'Erreur serveur' });
   }
+};
+
+// ======================
+//  EXPORT /me/export
+// ======================
+const exportProfile = async (req, res) => {
+  try {
+    const user = await findUserByEmail(req.user.email);
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' });
+    }
+
+    const exportData = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    };
+
+    // Déclenche un téléchargement JSON
+    res.setHeader('Content-Disposition', 'attachment; filename=export.json');
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(exportData);
+
+  } catch (error) {
+    console.error('Erreur export profil :', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+};
+
+//  J'exporte toutes les fonctions
+module.exports = {
+  register,
+  login,
+  getProfile,
+  updateProfile,
+  deleteProfile,
+  getAllUsers,
+  exportProfile 
 };

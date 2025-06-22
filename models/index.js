@@ -9,6 +9,8 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
 
+require('dotenv').config({ path: `.env.${env}` });
+
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
@@ -18,14 +20,12 @@ if (config.use_env_variable) {
 
 fs
   .readdirSync(__dirname)
-  .filter(file => {
-    return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
-    );
-  })
+  .filter(file => (
+    file.indexOf('.') !== 0 &&
+    file !== basename &&
+    file.slice(-3) === '.js' &&
+    !file.endsWith('.test.js')
+  ))
   .forEach(file => {
     const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
     db[model.name] = model;
@@ -37,7 +37,16 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+
+const Consent = require('./Consent')(sequelize, Sequelize.DataTypes);
+db.Consent = Consent;
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
+sequelize.authenticate()
+  .then(() => console.log('Connexion Sequelize réussie'))
+  .catch(err => console.error('Échec connexion Sequelize :', err));
+
 
 module.exports = db;

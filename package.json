@@ -1,17 +1,19 @@
 {
   "name": "backend-diary",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest",
+    "test:cov": "cross-env NODE_ENV=test jest --coverage",
     "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "argon2": "^0.43.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
@@ -26,11 +28,14 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.21",
     "cross-env": "^7.0.3",
     "jest": "^29.7.0",
     "nodemon": "^3.1.10",
+    "postcss": "^8.5.6",
     "sequelize-cli": "^6.6.3",
     "supertest": "^7.1.1",
-    "swagger-cli": "^4.0.4"
+    "swagger-cli": "^4.0.4",
+    "tailwindcss": "^4.1.10"
   }
 }

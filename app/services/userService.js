@@ -15,6 +15,7 @@ async function createUser({ firstName, lastName, email, password }) {
     lastName,
     email,
     password: hashedPassword,
+    role: 'user' // explicite pour éviter les surprises
   });
 
   return user;

@@ -5,21 +5,24 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Me from "./pages/Me";
 import AdminPanel from "./pages/AdminPanel";
-import Page403 from './pages/Page403';
-
+import Page403 from "./pages/Page403";
+import CookieModal from "./components/CookieModal"; // Bannière RGPD
 import { AuthProvider } from "./utils/AuthContext";
 import PrivateRoute from "./utils/PrivateRoute";
+import CookiePolicyPage from "./pages/CookiePolicyPage"; // Page RGPD
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <CookieModal /> {/* Affiche la bannière RGPD */}
         <Navbar />
         <Routes>
+          {/* Pages publiques */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* 🔐 Page protégée par token */}
+          {/* Pages privées */}
           <Route
             path="/me"
             element={
@@ -28,8 +31,6 @@ function App() {
               </PrivateRoute>
             }
           />
-
-          {/*  Page admin uniquement */}
           <Route
             path="/admin"
             element={
@@ -39,9 +40,12 @@ function App() {
             }
           />
 
-          {/* Optionnel : redirection vers login par défaut */}
-          <Route path="*" element={<Login />} />
+          {/* Pages RGPD */}
+          <Route path="/politique-confidentialite" element={<CookiePolicyPage />} />
+
+          {/* Autres */}
           <Route path="/403" element={<Page403 />} />
+          <Route path="*" element={<Login />} />
         </Routes>
       </Router>
     </AuthProvider>
