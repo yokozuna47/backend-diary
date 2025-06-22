@@ -16,8 +16,6 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-
-          {/* 🔓 Pages accessibles publiquement */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
