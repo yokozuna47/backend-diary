@@ -2,7 +2,7 @@
 
 [![CI Tests](https://github.com/yokozuna47/backend-diary/actions/workflows/test.yml/badge.svg)](https://github.com/yokozuna47/backend-diary/actions)
 
-## 🧩 Description
+##  Description
 Ce projet a pour objectif de créer un backend Node.js sécurisé pour gérer des utilisateurs via une API REST. Il intègre une base de données PostgreSQL, un système d'authentification JWT, une gestion des rôles (`user`, `admin`) et des protections classiques (rate-limiting, headers de sécurité, validation d’entrées).
 
 ## 🍪 Bannière de consentement RGPD-Compliant
@@ -20,11 +20,11 @@ L’application frontend intègre une **bannière de gestion des cookies conform
 - ✅ Accessibilité : `role="dialog"`, focus conservé, contraste élevé
 - ✅ Animations douces : fade-in / slide-in (config Tailwind)
 
-### 📸 Capture bannière (vue initiale)
+###  Capture bannière (vue initiale)
 
 ![Bannière RGPD](./screenshots/banner.png)
 
-### 📸 Capture panneau latéral (plus d’options)
+###  Capture panneau latéral (plus d’options)
 
 ![Panneau latéral RGPD](./screenshots/panel.png)
 
@@ -35,26 +35,26 @@ L’application frontend intègre une **bannière de gestion des cookies conform
 
 L'application respecte les exigences du **Règlement Général sur la Protection des Données (RGPD)** :
 
-### ✅ Principes appliqués
-- 🎯 **Licéité, loyauté, transparence** : collecte de consentement explicite, bannières claires
-- 🧠 **Limitation des finalités** : aucun cookie facultatif n'est activé sans accord
-- ⚖️ **Minimisation des données** : seules les préférences sont stockées via un cookie `userConsent`
-- ⏳ **Limitation de conservation** : durée de validité du consentement = 12 mois
-- 🔒 **Intégrité et confidentialité** : stockage sécurisé des consentements + usage de `SameSite=Strict; Secure`
+###  Principes appliqués
+-  **Licéité, loyauté, transparence** : collecte de consentement explicite, bannières claires
+-  **Limitation des finalités** : aucun cookie facultatif n'est activé sans accord
+-  **Minimisation des données** : seules les préférences sont stockées via un cookie `userConsent`
+-  **Limitation de conservation** : durée de validité du consentement = 12 mois
+-  **Intégrité et confidentialité** : stockage sécurisé des consentements + usage de `SameSite=Strict; Secure`
 
-### 🧠 Outils et conformité
-- 📄 **Politique de confidentialité** accessible (`/politique-confidentialite`)
-- 🍪 **Gestion des cookies granulaire** avec trace backend (UUID + horodatage + type de consentement)
-- 🧾 **Registre des traitements** possible avec structure standard des logs de consentement
-- 🔐 **Séparation des scripts par finalité** :
+###  Outils et conformité
+-  **Politique de confidentialité** accessible (`/politique-confidentialite`)
+-  **Gestion des cookies granulaire** avec trace backend (UUID + horodatage + type de consentement)
+-  **Registre des traitements** possible avec structure standard des logs de consentement
+-  **Séparation des scripts par finalité** :
   - `loadPreferencesScripts()`
   - `loadStatisticsScripts()`
   - `loadMarketingScripts()`
-- 🧠 **Mode développement RGPD-First** : tous les scripts tiers bloqués par défaut
+-  **Mode développement RGPD-First** : tous les scripts tiers bloqués par défaut
 
-### 🚀 Gouvernance possible (Bonus entreprise)
-- 📌 Compatible avec solutions comme **OneTrust**, **Cookiebot**, ou **DataGalaxy**
-- 🕵️ Traçabilité facilitée pour un DPO avec `POST /api/consent`
+###  Gouvernance possible (Bonus entreprise)
+-  Compatible avec solutions comme **OneTrust**, **Cookiebot**, ou **DataGalaxy**
+- 🕵 Traçabilité facilitée pour un DPO avec `POST /api/consent`
 - ✅ Conformité aux recommandations **CNIL** (version 2025)
 
 ---
