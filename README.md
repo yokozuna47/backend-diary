@@ -9,25 +9,25 @@ Ce projet a pour objectif de créer un backend Node.js sécurisé pour gérer de
 
 L’application frontend intègre une bannière de gestion des cookies conforme au RGPD, avec :
 
-    ✅ Consentement explicite avant chargement des cookies facultatifs
+     Consentement explicite avant chargement des cookies facultatifs
 
-    ✅ Refus possible aussi simple que l’acceptation (Tout refuser)
+     Refus possible aussi simple que l’acceptation (Tout refuser)
 
-    ✅ Choix granulaire : Préférences, Statistiques, Marketing
+     Choix granulaire : Préférences, Statistiques, Marketing
 
-    ✅ Conservation des choix pendant 12 mois
+     Conservation des choix pendant 12 mois
 
-    ✅ Lien vers la Politique de confidentialité
+     Lien vers la Politique de confidentialité
 
-    ✅ Icône flottante “Gérer mes cookies” (modifiable à tout moment)
+     Icône flottante “Gérer mes cookies” (modifiable à tout moment)
 
-    ✅ Scripts (analytics, préférences, pub) chargés uniquement après consentement
+     Scripts (analytics, préférences, pub) chargés uniquement après consentement
 
-    ✅ Envoi sécurisé du consentement au backend (/api/consent) avec UUID horodaté
+     Envoi sécurisé du consentement au backend (/api/consent) avec UUID horodaté
 
-    ✅ Accessibilité : role="dialog", focus conservé, contraste élevé
+     Accessibilité : role="dialog", focus conservé, contraste élevé
 
-    ✅ Animations douces : fade-in / slide-in (config Tailwind)
+     Animations douces : fade-in / slide-in (config Tailwind)
 
 ## Stack technique :
 
